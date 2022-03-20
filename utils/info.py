@@ -51,9 +51,9 @@ class Info:
 		except:
 			time_message = 'Invalid'
 		ret = [
-			'Time: {}; ID: {}'.format(time_message, self.id),
-			'Player: {}; Source: {}; Logging level: {}'.format(self.player, self.source, self.logging_level),
-			'Content: {}'.format(self.content),
-			'Raw content: {}'.format(self.raw_content)
+		    f'Time: {time_message}; ID: {self.id}',
+		    f'Player: {self.player}; Source: {self.source}; Logging level: {self.logging_level}',
+		    f'Content: {self.content}',
+		    f'Raw content: {self.raw_content}',
 		]
 		return '\n'.join(ret)

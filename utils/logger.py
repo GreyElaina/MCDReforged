@@ -41,7 +41,7 @@ class Logger:
 			counter = 0
 			while True:
 				counter += 1
-				zip_file_name = '{}/{}-{}.zip'.format(os.path.dirname(file_name), modify_time, counter)
+				zip_file_name = f'{os.path.dirname(file_name)}/{modify_time}-{counter}.zip'
 				if not os.path.isfile(zip_file_name):
 					break
 			zipf = zipfile.ZipFile(zip_file_name, 'w')

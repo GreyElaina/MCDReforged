@@ -37,7 +37,7 @@ class Rcon:
 		length = struct.unpack('<i', self.receive(4))[0]
 		data = self.receive(length)
 		packet = Packet()
-		packet.packet_id = struct.unpack('<i', data[0:4])[0]
+		packet.packet_id = struct.unpack('<i', data[:4])[0]
 		packet.packet_type = struct.unpack('<i', data[4:8])[0]
 		packet.payload = data[8:-2].decode('utf8')
 		return packet
@@ -67,7 +67,7 @@ class Rcon:
 			result = ''
 			while True:
 				packet = self.receive_packet()
-				if packet.payload == 'Unknown request {}'.format(hex(PacketType.ENDING_PACKET)[2:]):
+				if packet.payload == f'Unknown request {hex(PacketType.ENDING_PACKET)[2:]}':
 					break
 				result += packet.payload
 			return result

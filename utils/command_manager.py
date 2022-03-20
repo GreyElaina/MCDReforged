@@ -34,7 +34,6 @@ class CommandManager:
 		if len(args) == 1:
 			self.send_message(info, self.server.t('command_manager.help_message'))
 
-		# !!MCDR reload
 		elif len(args) >= 2 and args[1] in ['r', 'reload']:
 			if len(args) == 2:
 				self.send_message(info, self.server.t('command_manager.help_message_reload'))
@@ -50,21 +49,16 @@ class CommandManager:
 				else:
 					self.send_message(info, self.server.t('command_manager.command_not_found', '!!MCDR reload'))
 
-		# !!MCDR status
 		elif len(args) == 2 and args[1] in ['status']:
 			self.print_mcdr_status(info)
 
-		# !!MCDR permission <player> <level>
 		elif len(args) >= 2 and args[1] in ['permission', 'perm']:
 			if len(args) == 2:
 				self.send_message(info, self.server.t('command_manager.help_message_permission'))
-			# !!MCDR permission list [<level>]
-			elif len(args) in [3, 4] and args[2] == 'list':
+			elif len(args) in {3, 4} and args[2] == 'list':
 				self.list_permission(info, args[3] if len(args) == 4 else None)
-			# !!MCDR permission set <player> <level>
 			elif len(args) == 5 and args[2] == 'set':
 				self.set_player_permission(info, args[3], args[4])
-			# !!MCDR permission remove <player>
 			elif len(args) == 4 and args[2] in ['remove', 'rm']:
 				self.remove_player_permission(info, args[3])
 			elif len(args) == 4 and args[2] in ['setdefault', 'setd']:
@@ -136,9 +130,9 @@ class CommandManager:
 		specific_name = self.server.permission_manager.format_level_name(level)
 		for name in PermissionLevel.NAME:
 			if specific_name is None or name == specific_name:
-				self.send_message(info, '§7[§e{}§7]§r'.format(name))
+				self.send_message(info, f'§7[§e{name}§7]§r')
 				for player in self.server.permission_manager.get_permission_group_list(name):
-					self.send_message(info, '§7-§r {}'.format(player))
+					self.send_message(info, f'§7-§r {player}')
 
 	def set_default_permission(self, info, level):
 		level = self.server.permission_manager.format_level_name(level)
@@ -156,15 +150,20 @@ class CommandManager:
 			True: self.server.t('command_manager.print_mcdr_status.online'),
 			False: self.server.t('command_manager.print_mcdr_status.offline')
 		}
-		msg = []
-		msg.append(self.server.t('command_manager.print_mcdr_status.line1', constant.NAME, constant.VERSION))
+		msg = [
+		    self.server.t(
+		        'command_manager.print_mcdr_status.line1',
+		        constant.NAME,
+		        constant.VERSION,
+		    )
+		]
 		msg.append(self.server.t('command_manager.print_mcdr_status.line2', self.server.t(self.server.server_status)))
 		msg.append(self.server.t('command_manager.print_mcdr_status.line3', self.server.is_server_startup()))
 		msg.append(self.server.t('command_manager.print_mcdr_status.line4', status_dict[self.server.server_interface.is_rcon_running(is_plugin_call=False)]))
 		msg.append(self.server.t('command_manager.print_mcdr_status.line5', len(self.server.plugin_manager.plugins)))
 		self.send_message(info, '\n'.join(msg))
 		if info.source == InfoSource.CONSOLE and self.server.process is not None:
-			self.logger.info('PID: {}'.format(self.server.process.pid))
+			self.logger.info(f'PID: {self.server.process.pid}')
 
 	# --------------
 	# !!help command
@@ -173,7 +172,7 @@ class CommandManager:
 	# overwrite if existed
 	def add_help_message(self, prefix, message):
 		self.help_messages.append(collections.namedtuple('HelpMessage', 'prefix message')(prefix, message))
-		self.server.logger.debug('Added help message "{}: {}"'.format(prefix, message))
+		self.server.logger.debug(f'Added help message "{prefix}: {message}"')
 
 	# call before loading plugins
 	def clean_help_message(self):
@@ -183,4 +182,4 @@ class CommandManager:
 	def process_help_command(self, info):
 		sorted_list = sorted(self.help_messages, key=lambda x: x.prefix)
 		for prefix, message in sorted_list:
-			self.send_message(info, '§7{}§r: {}'.format(prefix, message))
+			self.send_message(info, f'§7{prefix}§r: {message}')

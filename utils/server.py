@@ -104,7 +104,7 @@ class Server:
 
 	def set_server_status(self, status):
 		self.server_status = status
-		self.logger.debug('Server status has set to "{}"'.format(status))
+		self.logger.debug(f'Server status has set to "{status}"')
 
 	# return True if the server process has started successfully
 	# return False if the server is already running or start_server has been called by other
@@ -133,12 +133,11 @@ class Server:
 
 	def start(self):
 		if self.start_server():
-			if not self.config['disable_console_thread']:
-				if self.console_input_thread is None or not self.console_input_thread.is_alive():
-					self.logger.info('Console thread starting')
-					self.console_input_thread = tool.start_thread(self.console_input, (), 'Console')
-			else:
+			if self.config['disable_console_thread']:
 				self.logger.info('Console thread disabled')
+			elif self.console_input_thread is None or not self.console_input_thread.is_alive():
+				self.logger.info('Console thread starting')
+				self.console_input_thread = tool.start_thread(self.console_input, (), 'Console')
 			self.run()
 
 	def stop(self, forced=False, new_server_status=ServerStatus.STOPPING_BY_ITSELF):
@@ -210,18 +209,20 @@ class Server:
 			text = self.parser_manager.get_parser().pre_parse_server_stdout(text)
 		except:
 			self.logger.warning(self.t('server.tick.pre_parse_fail'))
-		print('[Server] {}'.format(text))
+		print(f'[Server] {text}')
 
 		try:
 			parsed_result = self.parser_manager.get_parser().parse_server_stdout(text)
 		except:
-			self.logger.debug('Fail to parse text "{}" from stdout of the server, using raw parser'.format(text))
+			self.logger.debug(
+			    f'Fail to parse text "{text}" from stdout of the server, using raw parser'
+			)
 			# self.logger.debug(traceback.format_exc())
 			parsed_result = self.parser_manager.get_parser().parse_server_stdout_raw(text)
 		else:
 			self.logger.debug('Parsed text from server stdin:')
 			for line in str(parsed_result).splitlines():
-				self.logger.debug('    {}'.format(line))
+				self.logger.debug(f'    {line}')
 		self.react(parsed_result)
 
 	def run(self):
@@ -265,12 +266,12 @@ class Server:
 				else:
 					self.logger.debug('Parsed text from console input:')
 					for line in str(parsed_result).splitlines():
-						self.logger.debug('    {}'.format(line))
+						self.logger.debug(f'    {line}')
 					self.react(parsed_result)
 					if parsed_result.content == self.parser_manager.get_stop_command():
 						self.rcon_manager.disconnect()
 			except (KeyboardInterrupt, EOFError, SystemExit, IOError) as e:
-				self.logger.debug('Exception {} {} caught in console_input()'.format(type(e), e))
+				self.logger.debug(f'Exception {type(e)} {e} caught in console_input()')
 				self.flag_interrupt = True
 				self.stop(forced=True)
 				break

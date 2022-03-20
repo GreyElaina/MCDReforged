@@ -68,10 +68,9 @@ class PluginManager:
 			if file_name in name_dict:
 				plugin = name_dict[file_name]
 				counter_reload += self.reload_plugin(plugin)
-				counter_all += 1
 			else:
 				counter_load += self.load_plugin(file_name)
-				counter_all += 1
+			counter_all += 1
 		# unload
 		unload_list = []
 		for plugin in self.plugins:
@@ -92,14 +91,13 @@ class PluginManager:
 			msg.append(self.server.t('plugin_manager.load_plugins.info_reloaded', counter_reload))
 		if counter_fail > 0:
 			msg.append(self.server.t('plugin_manager.load_plugins.info_fail', counter_fail))
-		if len(msg) == 0:
-			msg = self.server.t('plugin_manager.load_plugins.info_none')
-		else:
-			msg = '; '.join(msg)
+		msg = ('; '.join(msg)
+		       if msg else self.server.t('plugin_manager.load_plugins.info_none'))
 		return msg
 
 	def call(self, func, args=(), wait=False):
-		self.logger.debug('Calling function "{}" in plugins with {} parameters'.format(func, len(args)))
+		self.logger.debug(
+		    f'Calling function "{func}" in plugins with {len(args)} parameters')
 		thread_list = []
 		for plugin in self.plugins:
 			thread = plugin.call(func, args)
@@ -110,7 +108,7 @@ class PluginManager:
 				thread.join()
 
 	def get_plugin(self, plugin_name):
-		for plugin in self.plugins:
-			if plugin.plugin_name == plugin_name:
-				return plugin
-		return None
+		return next(
+		    (plugin for plugin in self.plugins if plugin.plugin_name == plugin_name),
+		    None,
+		)

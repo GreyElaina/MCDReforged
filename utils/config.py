@@ -26,7 +26,8 @@ class Config:
 			self.data = {}
 		if key not in self.data:
 			self.data[key] = default
-			self.server.logger.warning('Option "{}" missing, use default value "{}"'.format(key, default))
+			self.server.logger.warning(
+			    f'Option "{key}" missing, use default value "{default}"')
 			return True
 		return False
 

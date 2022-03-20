@@ -17,7 +17,7 @@ class BungeecordParser(base_parser.BaseParser):
 		# 09:00:02 [信息] Listening on /0.0.0.0:25565
 		# 09:00:01 [信息] [Steve] -> UpstreamBridge has disconnected
 		time_data = re.search(r'[0-9]*:[0-9]*:[0-9]* ', text).group()
-		elements = time_data[0:-1].split(':')
+		elements = time_data[:-1].split(':')
 		result.hour = int(elements[0])
 		result.min = int(elements[1])
 		result.sec = int(elements[2])

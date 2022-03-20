@@ -33,7 +33,4 @@ class RconManager:
 		self.rcon = None
 
 	def send_command(self, command):
-		if self.is_running():
-			return self.rcon.send_command(command)
-		else:
-			return None
+		return self.rcon.send_command(command) if self.is_running() else None

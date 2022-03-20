@@ -15,7 +15,7 @@ class Plugin:
 		if hasattr(self.module, func):
 			target = self.module.__dict__[func]
 			if callable(target):
-				func_name = '{}@{}'.format(func, self.plugin_name)
+				func_name = f'{func}@{self.plugin_name}'
 				return tool.start_thread(target, args, func_name)
 		return None
 

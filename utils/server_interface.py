@@ -81,23 +81,27 @@ class ServerInterface:
 	# automatically append a '\n' at the end of the command
 	def execute(self, text, is_plugin_call=True):
 		if is_plugin_call:
-			self.logger.debug('Plugin called execute("{}")'.format(text))
+			self.logger.debug(f'Plugin called execute("{text}")')
 		self.__server.send(text)
 
 	def say(self, text, is_plugin_call=True):
 		if is_plugin_call:
-			self.logger.debug('Plugin called say("{}")'.format(text))
-		self.execute('tellraw @a {{"text":"{}"}}'.format(format_string(text)), is_plugin_call=False)
+			self.logger.debug(f'Plugin called say("{text}")')
+		self.execute(
+		    f'tellraw @a {{"text":"{format_string(text)}"}}', is_plugin_call=False)
 
 	def tell(self, player, text, is_plugin_call=True):
 		if is_plugin_call:
-			self.logger.debug('Plugin called tell("{}", "{}")'.format(player, text))
-		self.execute('tellraw {} {{"text":"{}"}}'.format(player, format_string(text)), is_plugin_call=False)
+			self.logger.debug(f'Plugin called tell("{player}", "{text}")')
+		self.execute(
+		    f'tellraw {player} {{"text":"{format_string(text)}"}}',
+		    is_plugin_call=False,
+		)
 
 	# reply to the info source, auto detects
 	def reply(self, info, msg, is_plugin_call=True):
 		if is_plugin_call:
-			self.logger.debug('Plugin called reply("{}", "{}")'.format(info, msg))
+			self.logger.debug(f'Plugin called reply("{info}", "{msg}")')
 		if info.is_player:
 			self.tell(info.player, msg, is_plugin_call=False)
 		else:
@@ -112,7 +116,7 @@ class ServerInterface:
 	# the object can be Info instance or player name
 	def get_permission_level(self, obj, is_plugin_call=True):
 		if is_plugin_call:
-			self.logger.debug('Plugin called get_permission_level("{}")'.format(obj))
+			self.logger.debug(f'Plugin called get_permission_level("{obj}")')
 		if type(obj) is Info:  # Info instance
 			return self.__server.permission_manager.get_info_permission_level(obj)
 		elif type(obj) is str:  # player name
@@ -125,7 +129,7 @@ class ServerInterface:
 	# if rcon is not running return None
 	def rcon_query(self, command, is_plugin_call=True):
 		if is_plugin_call:
-			self.logger.debug('Plugin called rcon_query("{}")'.format(command))
+			self.logger.debug(f'Plugin called rcon_query("{command}")')
 		return self.__server.rcon_manager.send_command(command)
 
 	# return the current loaded plugin instance. with this your plugin can access the same plugin instance as MCDR
@@ -134,7 +138,7 @@ class ServerInterface:
 	# if plugin not found, return None
 	def get_plugin_instance(self, plugin_name, is_plugin_call=True):
 		if is_plugin_call:
-			self.logger.debug('Plugin called get_plugin_instance("{}")'.format(plugin_name))
+			self.logger.debug(f'Plugin called get_plugin_instance("{plugin_name}")')
 		plugin = self.__server.plugin_manager.get_plugin(plugin_name)
 		if plugin is not None:
 			plugin = plugin.module
@@ -142,5 +146,5 @@ class ServerInterface:
 
 	def add_help_message(self, prefix, message, is_plugin_call=True):
 		if is_plugin_call:
-			self.logger.debug('Plugin called add_help_message("{}", "{}")'.format(prefix, message))
+			self.logger.debug(f'Plugin called add_help_message("{prefix}", "{message}")')
 		self.__server.command_manager.add_help_message(prefix, message)

@@ -27,7 +27,7 @@ class VanillaParser(base_parser.BaseParser):
 		# [Server thread/INFO]: <Steve> Hello
 		# [Server thread/WARN]: Can't keep up!
 
-		logging = re.match(r'^\[[{}]*?\]: '.format(self.Logger_NAME_CHAR_SET), text).group()
+		logging = re.match(f'^\\[[{self.Logger_NAME_CHAR_SET}]*?\\]: ', text).group()
 		result.logging_level = re.search(r'(?<=/)\w+(?=\]: )', logging).group()
 		text = text.replace(logging, '', 1)
 		# <Steve> Hello
@@ -43,14 +43,12 @@ class VanillaParser(base_parser.BaseParser):
 
 	def parse_player_joined(self, info):
 		if not info.is_user and info.content.endswith('joined the game'):
-			player = info.content.split(' ')[0]
-			return player
+			return info.content.split(' ')[0]
 		return None
 
 	def parse_player_left(self, info):
 		if not info.is_user and info.content.endswith('left the game'):
-			player = info.content.split(' ')[0]
-			return player
+			return info.content.split(' ')[0]
 		return None
 
 	def parse_player_made_advancement(self, info):

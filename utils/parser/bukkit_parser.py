@@ -44,10 +44,9 @@ class BukkitParser(vanilla_parser.VanillaParser):
 	def parse_player_joined(self, info):
 		# Fallen_Breath[/127.0.0.1:50099] logged in with entity id 11 at ([lobby]0.7133817548136454, 4.0, 5.481879061970788)
 		if not info.is_user:
-			result = re.fullmatch(f'\w+\[.*\] logged in with entity id .*', info.content)
+			result = re.fullmatch('\\w+\\[.*\\] logged in with entity id .*', info.content)
 			if result is not None:
-				player = info.content.split('[')[0]
-				return player
+				return info.content.split('[')[0]
 		return None
 
 

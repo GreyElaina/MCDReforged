@@ -55,10 +55,7 @@ class BaseParser(object):
 		if info.is_user:
 			return False
 		re_list = self.parser_manager.get_death_message_list(type(self))
-		for re_exp in re_list:
-			if re.fullmatch(re_exp, info.content):
-				return True
-		return False
+		return any(re.fullmatch(re_exp, info.content) for re_exp in re_list)
 
 	# returns 2 str: player_name, advancement_name
 	# if not matches return None

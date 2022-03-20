@@ -40,7 +40,8 @@ class LanguageManager:
 		try:
 			return self.translations[language][text]
 		except:
-			self.server.logger.error('Error translate text "{}" to language {}'.format(text, language))
+			self.server.logger.error(
+			    f'Error translate text "{text}" to language {language}')
 			return text
 
 	def set_language(self, language):
